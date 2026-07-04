@@ -1,14 +1,6 @@
-
----
-
-# `docs/milestones.md`
-
-Purpose: make progress trackable.
-
-```md
 # Milestones
 
-## Milestone 0: Repository Setup
+## Milestone 0: Repository setup
 
 Status: in progress
 
@@ -22,11 +14,11 @@ Checklist:
 - [x] Create feature branch
 - [x] Add documentation folders
 - [x] Remove local IDE files from Git tracking
-- [ ] Populate planning documents
+- [x] Populate planning documents
 - [ ] Open first pull request
 - [ ] Merge to main
 
-## Milestone 1: Daily Folder Structure
+## Milestone 1: Daily folder structure
 
 Objective:
 
@@ -40,7 +32,7 @@ Checklist:
 - [ ] Add basic tests
 - [ ] Document usage
 
-## Milestone 2: Run Metadata Standard
+## Milestone 2: Run metadata standard
 
 Objective:
 
@@ -54,7 +46,7 @@ Checklist:
 - [ ] Add validation logic
 - [ ] Document required and optional fields
 
-## Milestone 3: Story Brief Generator
+## Milestone 3: Story brief generator
 
 Objective:
 
@@ -68,7 +60,7 @@ Checklist:
 - [ ] Add manual review step
 - [ ] Save generated output to daily folder
 
-## Milestone 4: Platform Content Package
+## Milestone 4: Platform content package
 
 Objective:
 
@@ -83,7 +75,7 @@ Checklist:
 - [ ] YouTube Shorts package
 - [ ] Thumbnail ideas
 
-## Milestone 5: Editing Workflow Integration
+## Milestone 5: Editing workflow integration
 
 Objective:
 
@@ -97,7 +89,7 @@ Checklist:
 - [ ] Create manual editing checklist
 - [ ] Explore AI editing options
 
-## Milestone 6: Data Integration
+## Milestone 6: Data integration
 
 Objective:
 
