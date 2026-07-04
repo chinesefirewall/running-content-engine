@@ -71,3 +71,27 @@ The repository is public and should not expose sensitive personal data.
 Future action:
 
 Add clear `.gitignore` rules and sample files that use fake data.
+
+## Decision 005: Start with folder automation before AI editing
+
+Date: 2026-07-04
+
+Status: Accepted
+
+Decision:
+
+The first implementation milestone will be daily folder automation rather than AI editing.
+
+Reason:
+
+AI editing depends on a clean local workspace, consistent file naming, and structured metadata. Folder automation is the foundation that makes later automation easier and less fragile.
+
+Alternatives considered:
+
+- Start with AI prompts immediately
+- Start with Garmin or Strava integration
+- Start with video editing automation
+
+Expected benefit:
+
+A stable folder structure will make future media ingestion, metadata collection, story generation, and platform exports easier to implement.
