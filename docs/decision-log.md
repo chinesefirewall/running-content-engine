@@ -95,3 +95,38 @@ Alternatives considered:
 Expected benefit:
 
 A stable folder structure will make future media ingestion, metadata collection, story generation, and platform exports easier to implement.
+
+## Decision 006: Evaluate Remotion as the programmable rendering layer and MCP as the AI control interface
+
+Date: 2026-07-04
+
+Status: Accepted for roadmap, not yet implemented
+
+Decision:
+
+The project will evaluate Remotion as a coded video rendering layer and a local Model Context Protocol server as the safe AI control interface for future rendering workflows.
+
+Reason:
+
+Remotion can turn structured metadata, clips, and templates into repeatable video outputs. MCP can expose controlled local tools to AI clients without requiring the AI assistant to freely access the whole local machine.
+
+Expected benefit:
+
+This creates a path toward AI-directed video generation while preserving modularity, local control, and human approval.
+
+Initial constraints:
+
+- Remotion should not be introduced before folder automation and metadata are stable.
+- MCP tools should be narrow and safe.
+- The initial MCP server should not expose delete, publish, or broad file-system access tools.
+- The user should review all generated exports before publishing.
+
+Alternatives considered:
+
+- Use only CapCut or Insta360 templates
+- Build custom FFmpeg scripts first
+- Wait for fully automated AI video editors
+
+Expected future role:
+
+Remotion becomes the rendering engine. MCP becomes the AI-accessible control layer around safe local project actions.
