@@ -95,17 +95,23 @@ Checklist:
 
 ## Milestone 5: Editing workflow integration
 
+Status: complete
+
 Objective:
 
 Support a low-effort editing workflow using external tools.
 
+Delivered by `docs/manual-review-editing-workflow.md`, which defines the manual
+review loop, editing tool workflow, recommended export settings, and the
+pre-publish checklist.
+
 Checklist:
 
-- [ ] Document Insta360 workflow
-- [ ] Document CapCut workflow
-- [ ] Create recommended export settings
-- [ ] Create manual editing checklist
-- [ ] Explore AI editing options
+- [x] Document Insta360 workflow
+- [x] Document CapCut workflow
+- [x] Create recommended export settings
+- [x] Create manual editing checklist
+- [x] Explore AI editing options
 
 ## Milestone 6: Data integration
 
@@ -130,16 +136,23 @@ Checklist:
 
 ## Milestone 7: MVP
 
+Status: complete
+
 Objective:
 
 A complete local workflow from recording day to content package.
 
+The automated steps are chained by `scripts/run_day.py`, and the manual review,
+editing, and export step is defined in
+`docs/manual-review-editing-workflow.md`. See the README "End-to-end runbook
+(MVP)" section for the full one-day flow.
+
 Checklist:
 
-- [ ] Create daily folder
-- [ ] Import or place raw clips
-- [ ] Add run metadata
-- [ ] Generate story brief
-- [ ] Generate platform assets
-- [ ] Edit manually or semi-automatically
-- [ ] Export final files
+- [x] Create daily folder
+- [x] Import or place raw clips
+- [x] Add run metadata
+- [x] Generate story brief
+- [x] Generate platform assets
+- [x] Edit manually or semi-automatically
+- [x] Export final files

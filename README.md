@@ -23,9 +23,9 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the Garmin & Strava data integration stage.
+The project has reached its **v1.0 MVP**: a complete local pipeline from a recording day to a review-ready, multi-platform content package.
 
-The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool. The **activity importer** parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or activity JSON) and merges only aggregate summary metrics into `run.json`, and can also record weather and gear — deterministically, locally, and without ever storing GPS traces.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool. The **activity importer** parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or activity JSON) and merges only aggregate summary metrics into `run.json`, and can also record weather and gear — deterministically, locally, and without ever storing GPS traces. The **daily pipeline runner** (`scripts/run_day.py`) chains every automated step into one command, and the **manual review and editing workflow** (`docs/manual-review-editing-workflow.md`) defines the human editing step that turns the drafts and raw clips into a finished, publish-ready video.
 
 ## Quick start
 
@@ -63,6 +63,19 @@ Generate a platform content package from the metadata:
 
 ```bash
 python scripts/create_content_package.py --date 2026-07-05
+```
+
+Or run the whole day's pipeline in one command (create workspace, seed metadata, generate the story brief, and generate the content package):
+
+```bash
+python scripts/run_day.py --date 2026-07-05
+```
+
+Preview the pipeline plan without running it, and optionally import a local activity export in the same command:
+
+```bash
+python scripts/run_day.py --date 2026-07-05 --dry-run
+python scripts/run_day.py --date 2026-07-05 --import-file data/sample/garmin-activity.tcx --shoes "Sample Trainer 5"
 ```
 
 List the available AI prompt templates:
@@ -129,6 +142,28 @@ Record
   -> Publish
 ```
 
+## End-to-end runbook (MVP)
+
+One recording day, start to finish:
+
+1. **Record** 2 to 3 minutes of clips (see the standard clip structure in `docs/manual-review-editing-workflow.md`).
+2. **Run the pipeline** for the day. This creates the workspace, seeds metadata, generates the story brief, and generates the platform content package:
+   ```bash
+   python scripts/run_day.py --date 2026-07-05
+   ```
+   To also import metrics from a local Garmin/Strava export and record gear/weather in the same run:
+   ```bash
+   python scripts/run_day.py --date 2026-07-05 \
+     --import-file data/sample/garmin-activity.tcx \
+     --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
+   ```
+   The runner is idempotent: re-running a day skips steps whose output already exists. Use `--overwrite` to regenerate, and `--dry-run` to preview the plan.
+3. **Place raw clips** in `content/YYYY/YYYY-MM-DD/raw/` (kept local, never committed).
+4. **Review and edit** using the manual workflow in `docs/manual-review-editing-workflow.md`: read the story brief, pick one angle, edit in Insta360/CapCut, add Remotion data overlays, and export the vertical video into the day's `exports/` folder.
+5. **Final human check**: complete the review checklist, set `publish_intent`, and publish.
+
+See `docs/manual-review-editing-workflow.md` for the full review, editing, and publishing checklist.
+
 ## Planned daily workspace
 
 ```text
@@ -166,6 +201,7 @@ docs/
   folder-structure.md
   glossary.md
   data-integration.md
+  manual-review-editing-workflow.md
   metadata-schema.md
   milestones.md
   prompt-library.md
@@ -205,6 +241,7 @@ scripts/
   create_content_package.py
   create_prompt.py
   import_activity.py
+  run_day.py
 
 remotion/
   package.json
