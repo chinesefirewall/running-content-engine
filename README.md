@@ -89,12 +89,12 @@ Record the day's weather and shoes (no export needed):
 python scripts/import_activity.py --date 2026-07-05 --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
 ```
 
-Render the daily run short prototype (requires Node.js; see `remotion/README.md`):
+Render a content template (requires Node.js; see `remotion/README.md`):
 
 ```bash
 cd remotion
 npm install
-npm run render
+npm run render:daily     # or render:weekly, render:race, render:overlay, render:shoe
 ```
 
 Create a workspace for today:
@@ -170,6 +170,7 @@ docs/
   milestones.md
   prompt-library.md
   remotion-prototype.md
+  remotion-templates.md
   requirements.md
   roadmap.md
   story-brief.md
@@ -210,13 +211,24 @@ remotion/
   remotion.config.ts
   src/
     Root.tsx
+    theme.ts
     compositions/
       DailyRunShort.tsx
+      WeeklyTrainingRecap.tsx
+      RaceDaySummary.tsx
+      DataOverlayClip.tsx
+      ShoeReviewIntro.tsx
     templates/
+      Background.tsx
       MetricRow.tsx
+      StatCallout.tsx
       TitleCard.tsx
     data/
       sample-run.json
+      sample-week.json
+      sample-race.json
+      sample-overlay.json
+      sample-shoe.json
 
 src/
 tests/

@@ -1,14 +1,16 @@
 import React from 'react';
 import {interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
 
-// Shared title block: the run date (small, uppercase) above the working title.
-// Designed to be reused by the v0.9 template library, so it takes only plain
-// props and does its own entrance animation relative to a `delay` (in frames).
+// Shared title block: a small uppercase eyebrow (date, week, or race label)
+// above the main title. Reused across the v0.9 template library, so it takes
+// only plain props, does its own entrance animation relative to a `delay` (in
+// frames), and accepts an `accent` colour so each template can theme it.
 export const TitleCard: React.FC<{
   date: string;
   title: string;
+  accent?: string;
   delay?: number;
-}> = ({date, title, delay = 0}) => {
+}> = ({date, title, accent = '#8bd3ff', delay = 0}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -32,7 +34,7 @@ export const TitleCard: React.FC<{
           fontSize: 40,
           letterSpacing: 8,
           textTransform: 'uppercase',
-          color: '#8bd3ff',
+          color: accent,
           fontWeight: 600,
           marginBottom: 24,
         }}

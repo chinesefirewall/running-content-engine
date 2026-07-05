@@ -1,37 +1,39 @@
 import React from 'react';
 import {Background} from '../templates/Background';
 import {MetricRow} from '../templates/MetricRow';
+import {StatCallout} from '../templates/StatCallout';
 import {TitleCard} from '../templates/TitleCard';
 import {ACCENTS, GRADIENTS} from '../theme';
-import type {DailyRunShortProps} from '../types';
+import type {RaceDaySummaryProps} from '../types';
 
-// Daily run short (introduced in v0.8, now part of the v0.9 template library).
-//
-// Renders a vertical daily run short from the publish-safe props contract on the
-// shared gradient background (no bundled footage, so the public repo stays free
-// of personal media; real `raw/` footage can be wired in locally later). Given
-// the same props the output is deterministic.
-export const DailyRunShort: React.FC<DailyRunShortProps> = ({
+// Race day summary: the race name as the title, the finish time as the hero
+// stat, then the supporting race metrics and a one-line highlight. Reuses the
+// shared pieces so it matches the rest of the template family.
+export const RaceDaySummary: React.FC<RaceDaySummaryProps> = ({
   date,
-  title,
+  race_name,
   distance_km,
-  duration,
+  finish_time,
   average_pace,
-  average_heart_rate,
-  elevation_gain_m,
-  mood,
+  placement,
+  highlight,
 }) => {
   const metrics: {label: string; value: string}[] = [
     {label: 'Distance', value: `${distance_km.toFixed(1)} km`},
-    {label: 'Duration', value: duration},
     {label: 'Avg pace', value: average_pace},
-    {label: 'Avg HR', value: `${average_heart_rate} bpm`},
-    {label: 'Elevation', value: `${elevation_gain_m} m`},
+    {label: 'Placement', value: placement},
   ];
 
   return (
-    <Background gradient={GRADIENTS.daily}>
-      <TitleCard date={date} title={title} accent={ACCENTS.daily} delay={0} />
+    <Background gradient={GRADIENTS.race}>
+      <TitleCard date={date} title={race_name} accent={ACCENTS.race} delay={0} />
+
+      <StatCallout
+        value={finish_time}
+        caption="Finish time"
+        accent={ACCENTS.race}
+        delay={10}
+      />
 
       <div style={{display: 'flex', flexDirection: 'column', gap: 32}}>
         {metrics.map((metric, index) => (
@@ -39,7 +41,7 @@ export const DailyRunShort: React.FC<DailyRunShortProps> = ({
             key={metric.label}
             label={metric.label}
             value={metric.value}
-            delay={12 + index * 6}
+            delay={24 + index * 6}
           />
         ))}
       </div>
@@ -52,7 +54,7 @@ export const DailyRunShort: React.FC<DailyRunShortProps> = ({
           lineHeight: 1.3,
         }}
       >
-        &ldquo;{mood}&rdquo;
+        &ldquo;{highlight}&rdquo;
       </div>
     </Background>
   );
