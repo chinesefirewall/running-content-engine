@@ -23,9 +23,9 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the folder automation stage.
+The project is in the metadata schema stage.
 
-The first implementation target is **daily folder automation**: a repeatable way to create the local workspace for each recording day.
+The current implementation target is **run metadata**: a structured `metadata/run.json` file for each daily workspace.
 
 ## Quick start
 
@@ -35,16 +35,28 @@ Create a workspace for a specific date:
 python scripts/create_day.py --date 2026-07-05
 ```
 
-Preview the folders without creating them:
+Create starter metadata for the same date:
 
 ```bash
-python scripts/create_day.py --date 2026-07-05 --dry-run
+python scripts/create_metadata.py --date 2026-07-05
+```
+
+Preview metadata without writing:
+
+```bash
+python scripts/create_metadata.py --date 2026-07-05 --dry-run
 ```
 
 Create a workspace for today:
 
 ```bash
 python scripts/create_day.py --date today
+```
+
+Create metadata for today:
+
+```bash
+python scripts/create_metadata.py --date today
 ```
 
 Run tests:
@@ -80,6 +92,7 @@ content/YYYY/YYYY-MM-DD/
     facebook/
     shorts/
   metadata/
+    run.json
   notes/
   thumbnails/
 ```
@@ -101,15 +114,23 @@ docs/
   decision-log.md
   folder-structure.md
   glossary.md
+  metadata-schema.md
   milestones.md
   requirements.md
   roadmap.md
+
+examples/
+  run_metadata.sample.json
+
+schemas/
+  run_metadata.schema.json
 
 journal/
   2026/
 
 scripts/
   create_day.py
+  create_metadata.py
 
 src/
 tests/
@@ -117,13 +138,6 @@ tests/
 
 ## Privacy notice
 
-This public repository should not contain:
-
-- raw videos
-- GPS tracks
-- private health data
-- API tokens
-- personal exports from Garmin or Strava
-- unpublished personal media
+This public repository should not contain raw videos, GPS tracks, tokens, private exports, or unpublished personal media.
 
 Sample data should be anonymized or synthetic.
