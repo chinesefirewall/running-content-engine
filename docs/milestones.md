@@ -20,7 +20,7 @@ Checklist:
 
 ## Milestone 1: Daily folder structure
 
-Status: in progress
+Status: complete
 
 Objective:
 
@@ -33,10 +33,12 @@ Checklist:
 - [x] Add dry-run mode
 - [x] Add basic tests
 - [x] Document usage
-- [ ] Open pull request
-- [ ] Merge to main
+- [x] Open pull request
+- [x] Merge to main
 
 ## Milestone 2: Run metadata standard
+
+Status: in progress
 
 Objective:
 
@@ -44,11 +46,14 @@ Create a structured metadata format for daily runs.
 
 Checklist:
 
-- [ ] Define metadata fields
-- [ ] Choose JSON or YAML
-- [ ] Create sample metadata file
-- [ ] Add validation logic
-- [ ] Document required and optional fields
+- [x] Define metadata fields
+- [x] Choose JSON or YAML
+- [x] Create sample metadata file
+- [x] Add starter metadata generator
+- [x] Add basic tests
+- [x] Document required and optional fields
+- [ ] Open pull request
+- [ ] Merge to main
 
 ## Milestone 3: Story brief generator
 
