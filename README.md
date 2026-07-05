@@ -23,9 +23,35 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the foundation stage.
+The project is in the folder automation stage.
 
 The first implementation target is **daily folder automation**: a repeatable way to create the local workspace for each recording day.
+
+## Quick start
+
+Create a workspace for a specific date:
+
+```bash
+python scripts/create_day.py --date 2026-07-05
+```
+
+Preview the folders without creating them:
+
+```bash
+python scripts/create_day.py --date 2026-07-05 --dry-run
+```
+
+Create a workspace for today:
+
+```bash
+python scripts/create_day.py --date today
+```
+
+Run tests:
+
+```bash
+python -m pytest
+```
 
 ## High-level workflow
 
@@ -73,6 +99,7 @@ content/YYYY/YYYY-MM-DD/
 docs/
   architecture.md
   decision-log.md
+  folder-structure.md
   glossary.md
   milestones.md
   requirements.md
@@ -82,6 +109,8 @@ journal/
   2026/
 
 scripts/
+  create_day.py
+
 src/
 tests/
 ```

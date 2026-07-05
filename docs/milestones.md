@@ -2,7 +2,7 @@
 
 ## Milestone 0: Repository setup
 
-Status: in progress
+Status: complete
 
 Objective:
 
@@ -15,10 +15,12 @@ Checklist:
 - [x] Add documentation folders
 - [x] Remove local IDE files from Git tracking
 - [x] Populate planning documents
-- [ ] Open first pull request
-- [ ] Merge to main
+- [x] Open first pull request
+- [x] Merge to main
 
 ## Milestone 1: Daily folder structure
+
+Status: in progress
 
 Objective:
 
@@ -26,11 +28,13 @@ Create a repeatable local folder structure for each recording day.
 
 Checklist:
 
-- [ ] Define folder naming convention
-- [ ] Create folder automation script
-- [ ] Add dry-run mode
-- [ ] Add basic tests
-- [ ] Document usage
+- [x] Define folder naming convention
+- [x] Create folder automation script
+- [x] Add dry-run mode
+- [x] Add basic tests
+- [x] Document usage
+- [ ] Open pull request
+- [ ] Merge to main
 
 ## Milestone 2: Run metadata standard
 
