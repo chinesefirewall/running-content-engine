@@ -1,0 +1,25 @@
+{
+  "name": "running-content-engine-remotion",
+  "version": "0.8.0",
+  "private": true,
+  "description": "v0.8 Remotion rendering prototype for the Running Content Engine. Renders one vertical daily run short from synthetic, publish-safe run metadata.",
+  "license": "MIT",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render DailyRunShort ../exports/shorts/daily-run-short.mp4 --props=src/data/sample-run.json",
+    "upgrade": "remotion upgrade",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.0",
+    "zod": "^3.22.3"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.4.5"
+  }
+}
