@@ -233,9 +233,15 @@ Prototype scope:
 - avoid real private footage in the public repository
 - keep the render workflow local-first
 
+See `docs/remotion-prototype.md` for the design and options.
+
+Status: complete
+
 ## v0.9: Remotion content templates
 
 Goal: create reusable coded video templates for common content types.
+
+Status: next
 
 Possible templates:
 

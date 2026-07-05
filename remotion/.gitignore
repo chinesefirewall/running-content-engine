@@ -1,0 +1,13 @@
+# Node / Remotion toolchain artifacts (kept out of version control).
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Remotion caches and bundles.
+.remotion/
+out/
+
+# Rendered videos never belong in the public repo (see Decision 004).
+*.mp4
+*.mov

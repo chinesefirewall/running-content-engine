@@ -93,6 +93,13 @@ dmypy.json
 .ruff_cache/
 .junie/
 
+# Node / Remotion toolchain (v0.8 rendering prototype under remotion/)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.remotion/
+
 # Project-private local content
 # Do not commit raw media, exports, Garmin/Strava files, GPS tracks, or personal content.
 content/
