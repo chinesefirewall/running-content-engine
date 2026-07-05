@@ -33,7 +33,8 @@
       "description": "Controls whether metadata is safe for public examples or must remain local."
     },
     "title_working": {
-      "type": "string"
+      "type": ["string", "null"],
+      "description": "Optional working title for the day's content. May be null before a title is chosen."
     },
     "metrics": {
       "type": "object",

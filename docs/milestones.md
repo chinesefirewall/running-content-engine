@@ -50,6 +50,7 @@ Checklist:
 - [x] Choose JSON or YAML
 - [x] Create sample metadata file
 - [x] Add starter metadata generator
+- [x] Validate generated metadata against the JSON schema
 - [x] Add basic tests
 - [x] Document required and optional fields
 - [ ] Open pull request
@@ -57,17 +58,19 @@ Checklist:
 
 ## Milestone 3: Story brief generator
 
+Status: in progress
+
 Objective:
 
 Generate a daily story brief from notes and metadata.
 
 Checklist:
 
-- [ ] Define story brief template
-- [ ] Create initial prompt
-- [ ] Generate sample output
-- [ ] Add manual review step
-- [ ] Save generated output to daily folder
+- [x] Define story brief template
+- [ ] Create initial AI prompt (deferred to the prompt library milestone)
+- [x] Generate sample output
+- [x] Add manual review step
+- [x] Save generated output to daily folder
 
 ## Milestone 4: Platform content package
 

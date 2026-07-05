@@ -23,11 +23,17 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the metadata schema stage.
+The project is in the story brief stage.
 
-The current implementation target is **run metadata**: a structured `metadata/run.json` file for each daily workspace.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The current implementation target is the **story brief generator**, which turns metadata and notes into a review-ready content draft.
 
 ## Quick start
+
+Install dependencies:
+
+```bash
+pip install -e ".[dev]"
+```
 
 Create a workspace for a specific date:
 
@@ -45,6 +51,12 @@ Preview metadata without writing:
 
 ```bash
 python scripts/create_metadata.py --date 2026-07-05 --dry-run
+```
+
+Generate a story brief from the metadata:
+
+```bash
+python scripts/create_story_brief.py --date 2026-07-05
 ```
 
 Create a workspace for today:
@@ -118,6 +130,7 @@ docs/
   milestones.md
   requirements.md
   roadmap.md
+  story-brief.md
 
 examples/
   run_metadata.sample.json
@@ -131,6 +144,7 @@ journal/
 scripts/
   create_day.py
   create_metadata.py
+  create_story_brief.py
 
 src/
 tests/

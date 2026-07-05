@@ -69,6 +69,22 @@ Overwrite an existing file:
 python scripts/create_metadata.py --date 2026-07-05 --overwrite
 ```
 
+## Validation
+
+The generator validates metadata against `schemas/run_metadata.schema.json`
+before writing it, so an invalid `run.json` is never created on disk.
+Validation uses the [`jsonschema`](https://pypi.org/project/jsonschema/)
+package (declared in `pyproject.toml`).
+
+If validation fails, the command prints the offending fields and exits with a
+non-zero status without writing the file.
+
+Skip validation (not recommended) with:
+
+```bash
+python scripts/create_metadata.py --date 2026-07-05 --no-validate
+```
+
 ## Required top-level fields
 
 The schema requires:
