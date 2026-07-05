@@ -262,7 +262,7 @@ Status: complete
 
 ## v1.0: MVP
 
-Status: next
+Status: complete
 
 Goal: complete a working local pipeline that supports:
 
@@ -271,6 +271,23 @@ Goal: complete a working local pipeline that supports:
 - story brief generation
 - platform-specific content package
 - manual review and editing workflow
+
+The pipeline steps are chained by a single orchestrator, `scripts/run_day.py`,
+which runs `create_day` → `create_metadata` → (optional `import_activity`) →
+`create_story_brief` → `create_content_package` for one recording day. It is
+idempotent (skips steps whose output exists), supports `--dry-run`, and can
+import a local activity export in the same command.
+
+The final human step is defined in `docs/manual-review-editing-workflow.md`: the
+manual review, editing (Insta360 / CapCut / Remotion), recommended export
+settings, and the pre-publish checklist. See the README "End-to-end runbook
+(MVP)" section for the full one-day flow.
+
+Example command:
+
+```bash
+python scripts/run_day.py --date 2026-07-05
+```
 
 ## v1.1: Local MCP server
 

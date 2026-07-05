@@ -130,3 +130,35 @@ Alternatives considered:
 Expected future role:
 
 Remotion becomes the rendering engine. MCP becomes the AI-accessible control layer around safe local project actions.
+
+## Decision 007: Complete the MVP with a pipeline orchestrator and a manual editing workflow
+
+Date: 2026-07-05
+
+Status: Accepted
+
+Decision:
+
+The v1.0 MVP is completed by two additions rather than new feature work: a thin
+orchestrator, `scripts/run_day.py`, that chains the existing pipeline steps for
+one recording day, and a documented human step,
+`docs/manual-review-editing-workflow.md`, that defines the manual review,
+editing, export settings, and pre-publish checklist.
+
+Reason:
+
+The individual steps (folder automation, metadata, story brief, content package,
+activity import) already existed as separate scripts. The MVP gap was a single
+repeatable path through them and a defined human editing step, not more code.
+
+Expected benefit:
+
+One command drives a whole day, re-runs are safe (idempotent, with `--dry-run`
+and `--overwrite`), and the editorial identity, tooling, and publishing checklist
+are captured so editing stays fast, consistent, and personal.
+
+Alternatives considered:
+
+- A documentation-only runbook without an orchestrator script
+- A larger orchestration framework or task runner
+- Leaving the steps as separate manual commands
