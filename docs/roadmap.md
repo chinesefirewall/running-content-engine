@@ -241,19 +241,28 @@ Status: complete
 
 Goal: create reusable coded video templates for common content types.
 
-Status: next
+Delivered as a small template library under `remotion/`, built on the shared
+`Background`/`TitleCard`/`MetricRow`/`StatCallout` pieces and a single brand kit
+(`theme.ts`). Each template is a Remotion composition with its own publish-safe
+`zod` props contract and synthetic sample props.
 
-Possible templates:
+Templates:
 
-- daily short
-- weekly training recap
-- race day summary
-- data overlay clip
-- shoe review intro
+- daily short (`DailyRunShort`)
+- weekly training recap (`WeeklyTrainingRecap`)
+- race day summary (`RaceDaySummary`)
+- data overlay clip (`DataOverlayClip`)
+- shoe review intro (`ShoeReviewIntro`)
 
-These templates should receive structured props from metadata files and produce consistent video outputs.
+These templates receive structured props from metadata files and produce
+consistent vertical `1080x1920` video outputs. See `docs/remotion-templates.md`
+for the design, per-template props contracts, and render commands.
+
+Status: complete
 
 ## v1.0: MVP
+
+Status: next
 
 Goal: complete a working local pipeline that supports:
 

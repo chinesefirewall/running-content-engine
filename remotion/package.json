@@ -1,12 +1,17 @@
 {
   "name": "running-content-engine-remotion",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
-  "description": "v0.8 Remotion rendering prototype for the Running Content Engine. Renders one vertical daily run short from synthetic, publish-safe run metadata.",
+  "description": "Remotion content templates for the Running Content Engine. Renders a family of vertical short videos (daily run, weekly recap, race day, data overlay, shoe review) from synthetic, publish-safe run metadata.",
   "license": "MIT",
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render DailyRunShort ../exports/shorts/daily-run-short.mp4 --props=src/data/sample-run.json",
+    "render:daily": "remotion render DailyRunShort ../exports/shorts/daily-run-short.mp4 --props=src/data/sample-run.json",
+    "render:weekly": "remotion render WeeklyTrainingRecap ../exports/shorts/weekly-training-recap.mp4 --props=src/data/sample-week.json",
+    "render:race": "remotion render RaceDaySummary ../exports/shorts/race-day-summary.mp4 --props=src/data/sample-race.json",
+    "render:overlay": "remotion render DataOverlayClip ../exports/shorts/data-overlay-clip.mp4 --props=src/data/sample-overlay.json",
+    "render:shoe": "remotion render ShoeReviewIntro ../exports/shorts/shoe-review-intro.mp4 --props=src/data/sample-shoe.json",
     "upgrade": "remotion upgrade",
     "typecheck": "tsc --noEmit"
   },
