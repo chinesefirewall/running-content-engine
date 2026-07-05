@@ -7,6 +7,7 @@ single command drives a whole recording day:
     create_day
       -> create_metadata
       -> import_activity            (only when import/enrichment flags are given)
+      -> enrich_notes               (only when --enrich is given)
       -> create_story_brief
       -> create_content_package
 
@@ -25,6 +26,7 @@ Example:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from dataclasses import dataclass, field
 from datetime import date
@@ -42,8 +44,10 @@ from scripts import (
     create_day,
     create_metadata,
     create_story_brief,
+    enrich_notes,
     import_activity,
 )
+from scripts.ai_providers import PROVIDER_NAMES
 from scripts.create_content_package import PACKAGE_FILES, day_path_for_date
 from scripts.create_day import parse_activity_date
 from scripts.create_metadata import metadata_path_for_date
@@ -121,6 +125,14 @@ def build_steps(args: argparse.Namespace) -> list[Step]:
             import_argv += ["--weather", args.weather]
         if args.temperature_c is not None:
             import_argv += ["--temperature-c", str(args.temperature_c)]
+        if args.weather_city is not None:
+            import_argv += ["--weather-city", args.weather_city]
+        if args.weather_country is not None:
+            import_argv += ["--weather-country", args.weather_country]
+        if args.auto_locate:
+            import_argv.append("--auto-locate")
+        if args.health_export is not None:
+            import_argv += ["--health-export", str(args.health_export)]
         if args.shoes is not None:
             import_argv += ["--shoes", args.shoes]
         if args.overwrite:
@@ -132,6 +144,26 @@ def build_steps(args: argparse.Namespace) -> list[Step]:
                 name="import_activity",
                 argv=import_argv,
                 run=import_activity.main,
+            )
+        )
+
+    # 3.5. Draft content_notes via AI. Only when --enrich is given.
+    if args.enrich:
+        enrich_argv = [*base, "--provider", args.provider]
+        if args.enrich_model is not None:
+            enrich_argv += ["--model", args.enrich_model]
+        if args.include_health_cloud:
+            enrich_argv.append("--include-health-cloud")
+        if args.overwrite:
+            enrich_argv.append("--overwrite")
+        if args.no_validate:
+            enrich_argv.append("--no-validate")
+        steps.append(
+            Step(
+                name="enrich_notes",
+                argv=enrich_argv,
+                run=enrich_notes.main,
+                skip=lambda: _content_notes_already_drafted(metadata_path),
             )
         )
 
@@ -171,10 +203,32 @@ def build_steps(args: argparse.Namespace) -> list[Step]:
 def _import_requested(args: argparse.Namespace) -> bool:
     """Whether the caller supplied any import/enrichment input."""
 
-    return any(
-        value is not None
-        for value in (args.import_file, args.weather, args.temperature_c, args.shoes)
+    return (
+        any(
+            value is not None
+            for value in (
+                args.import_file,
+                args.weather,
+                args.temperature_c,
+                args.weather_city,
+                args.health_export,
+                args.shoes,
+            )
+        )
+        or args.auto_locate
     )
+
+
+def _content_notes_already_drafted(metadata_path: Path) -> bool:
+    """Whether every content_notes field and title_working is already populated."""
+
+    if not metadata_path.exists():
+        return False
+    try:
+        metadata = enrich_notes.load_metadata(metadata_path)
+    except (OSError, json.JSONDecodeError):
+        return False
+    return enrich_notes.is_fully_drafted(metadata)
 
 
 def run_pipeline(steps: list[Step], overwrite: bool = False) -> int:
@@ -247,9 +301,61 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional temperature in degrees Celsius to record.",
     )
     parser.add_argument(
+        "--weather-city",
+        default=None,
+        help="City name to fetch weather for from the internet (Open-Meteo, "
+        "no API key needed), e.g. 'Tallinn'.",
+    )
+    parser.add_argument(
+        "--weather-country",
+        default=None,
+        help="ISO country code to disambiguate --weather-city, e.g. 'EE'.",
+    )
+    parser.add_argument(
+        "--auto-locate",
+        action="store_true",
+        help="Fetch weather for your approximate location via IP geolocation "
+        "instead of --weather-city. Opt-in only: sends your public IP to a "
+        "third-party geolocation service.",
+    )
+    parser.add_argument(
+        "--health-export",
+        type=Path,
+        default=None,
+        help="Path to an Apple Health export.xml to pull HRV, resting heart "
+        "rate, sleep, and VO2 max from.",
+    )
+    parser.add_argument(
         "--shoes",
         default=None,
         help="Optional shoes worn to record.",
+    )
+    parser.add_argument(
+        "--enrich",
+        action="store_true",
+        help="Draft content_notes (mood, lesson, story_angle, hook, key_moment, "
+        "title_working) via an AI provider.",
+    )
+    parser.add_argument(
+        "--provider",
+        default="claude",
+        choices=PROVIDER_NAMES,
+        help="AI provider for --enrich. Default: claude. Cloud providers "
+        "(claude, openai) need a separate API key -- a ChatGPT Plus / Claude "
+        "Pro subscription does not include API access.",
+    )
+    parser.add_argument(
+        "--enrich-model",
+        default=None,
+        help="Override the provider's default model for --enrich. Required "
+        "when --provider openai.",
+    )
+    parser.add_argument(
+        "--include-health-cloud",
+        action="store_true",
+        help="Also send health.* to a cloud provider during --enrich. Off by "
+        "default; ignored for --provider ollama, which always includes it "
+        "locally.",
     )
     parser.add_argument(
         "--overwrite",

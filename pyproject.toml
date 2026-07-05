@@ -3,7 +3,7 @@ name = "running-content-engine"
 version = "0.1.0"
 description = "AI-powered pipeline for turning running footage, training data, and daily notes into multi-platform social media content packages."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
     "jsonschema>=4.17",
@@ -18,6 +18,15 @@ dev = [
 # library and require no extra dependency. See docs/data-integration.md.
 fit = [
     "fitparse>=1.2",
+]
+# scripts/enrich_notes.py cloud providers (see docs/ai-content-enrichment.md).
+# Install just the one you use, e.g. `pip install anthropic`. Not needed for
+# --provider ollama, which only makes local HTTP calls via the stdlib.
+# anthropic is pinned exactly (tested and verified against the live API in
+# .venv); openai is left as a floor since it hasn't been installed/tested yet.
+enrich = [
+    "anthropic==0.116.0",
+    "openai>=1.50",
 ]
 
 [tool.pytest.ini_options]

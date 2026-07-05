@@ -289,6 +289,43 @@ Example command:
 python scripts/run_day.py --date 2026-07-05
 ```
 
+## v1.0.1: Automated content-notes enrichment, weather sourcing, Apple Health
+
+Goal: automate the `content_notes` fields (`mood`, `lesson`, `story_angle`,
+`hook`, `key_moment`, `title_working`) instead of typing them by hand or
+copy/pasting into an AI chat window, and source weather from the internet
+instead of typing it.
+
+`scripts/enrich_notes.py` is a new, optional pipeline step that drafts
+`content_notes` via an AI provider (Claude, OpenAI, or a local Ollama model,
+selected with `--provider`) and merges the result into `run.json` with the
+same "fill empty fields only" semantics as `import_activity.py`. It never
+touches `publish_intent` — an AI draft never bumps publishing readiness on
+its own — and stamps a new `content_notes.draft_source` field so a human
+reviewer can see at a glance which fields were machine-drafted.
+
+`import_activity.py` gained two more enrichment sources:
+
+- Weather from [Open-Meteo](https://open-meteo.com) via `--weather-city`/
+  `--weather-country`, or an opt-in `--auto-locate` (IP geolocation).
+- Apple Health's exported `export.xml` via `--health-export`, pulling HRV,
+  resting heart rate, sleep, and VO2 max into a new `health` metadata section.
+
+Example commands:
+
+```bash
+python scripts/import_activity.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
+python scripts/import_activity.py --date 2026-07-05 --health-export data/private/apple_health/export.xml
+python scripts/enrich_notes.py --date 2026-07-05 --provider claude
+python scripts/run_day.py --date 2026-07-05 --enrich --provider claude
+```
+
+See `docs/ai-content-enrichment.md` for the full design (including why
+Strava's richer fields were deferred in favor of Apple Health — Decision 008)
+and `docs/data-integration.md` for weather/Apple Health usage.
+
+Status: complete
+
 ## v1.1: Local MCP server
 
 Goal: expose safe local project tools to AI clients through a Model Context Protocol server.

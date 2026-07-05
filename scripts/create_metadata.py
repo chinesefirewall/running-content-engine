@@ -104,6 +104,13 @@ def build_default_metadata(activity_date, publish_intent: str = "do_not_publish"
             "surface": None,
             "location_context": None,
         },
+        "health": {
+            "hrv_ms": None,
+            "resting_heart_rate": None,
+            "sleep_hours": None,
+            "vo2_max": None,
+            "source": None,
+        },
         "content_notes": {
             "mood": None,
             "lesson": None,
@@ -111,6 +118,7 @@ def build_default_metadata(activity_date, publish_intent: str = "do_not_publish"
             "hook": None,
             "key_moment": None,
             "publish_intent": publish_intent,
+            "draft_source": None,
         },
         "clips": [],
         "created_at": now,

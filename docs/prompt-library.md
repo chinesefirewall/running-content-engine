@@ -9,10 +9,16 @@ It is the raw material a human (and, later, the MCP layer) uses to generate
 captions, hooks, titles, and descriptions. Keeping the prompts in the repository
 means they can be reviewed, improved, and reused over time.
 
-The renderer is deterministic and local-first: it does not call any external AI
-service and never publishes anything. It fills a template with metadata and
-writes a ready-to-paste prompt; the human pastes it into ChatGPT, Claude,
-Gemini, or a local model.
+The renderer (`scripts/create_prompt.py`) is deterministic and local-first: it
+does not call any external AI service and never publishes anything. It fills a
+template with metadata and writes a ready-to-paste prompt; the human pastes it
+into ChatGPT, Claude, Gemini, or a local model.
+
+One template, `enrich-content-notes`, is also used automatically by
+`scripts/enrich_notes.py` (see `docs/ai-content-enrichment.md`), which calls
+an AI provider directly instead of requiring copy/paste. That is the one
+exception to "no external AI service" in this file — it is opt-in only (you
+have to run that script) and is documented separately.
 
 ## Template location
 
@@ -26,6 +32,7 @@ prompts/
   shoe-review.md
   weekly-training-summary.md
   health-transformation-story.md
+  enrich-content-notes.md
 ```
 
 Each template has light YAML front matter and a Markdown body with

@@ -82,7 +82,23 @@
         "story_angle": {"type": ["string", "null"]},
         "hook": {"type": ["string", "null"]},
         "key_moment": {"type": ["string", "null"]},
-        "publish_intent": {"type": "string", "enum": ["do_not_publish", "draft", "ready_for_review", "published"]}
+        "publish_intent": {"type": "string", "enum": ["do_not_publish", "draft", "ready_for_review", "published"]},
+        "draft_source": {
+          "type": ["string", "null"],
+          "enum": ["manual", "ai_claude", "ai_openai", "ai_ollama", null],
+          "description": "Who drafted these notes. Null or 'manual' means hand-written."
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hrv_ms": {"type": ["number", "null"], "minimum": 0},
+        "resting_heart_rate": {"type": ["integer", "null"], "minimum": 0},
+        "sleep_hours": {"type": ["number", "null"], "minimum": 0},
+        "vo2_max": {"type": ["number", "null"], "minimum": 0},
+        "source": {"type": ["string", "null"], "enum": ["apple_health", "manual", null]}
       }
     },
     "clips": {
