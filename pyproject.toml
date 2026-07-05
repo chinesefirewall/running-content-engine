@@ -1,0 +1,11 @@
+[project]
+name = "running-content-engine"
+version = "0.1.0"
+description = "AI-powered pipeline for turning running footage, training data, and daily notes into multi-platform social media content packages."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
