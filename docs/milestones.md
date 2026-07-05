@@ -58,7 +58,7 @@ Checklist:
 
 ## Milestone 3: Story brief generator
 
-Status: complete (AI prompt deferred to Milestone 6 prompt library)
+Status: complete
 
 Objective:
 
@@ -67,7 +67,7 @@ Generate a daily story brief from notes and metadata.
 Checklist:
 
 - [x] Define story brief template
-- [ ] Create initial AI prompt (deferred to the prompt library milestone)
+- [x] Create initial AI prompt (delivered by the roadmap v0.6 prompt library; see docs/prompt-library.md)
 - [x] Generate sample output
 - [x] Add manual review step
 - [x] Save generated output to daily folder
