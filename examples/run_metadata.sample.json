@@ -1,0 +1,61 @@
+{
+  "date": "2026-07-05",
+  "activity_type": "run",
+  "recording_type": "daily_run",
+  "privacy_level": "public_safe",
+  "title_working": "Easy Sunday run with a strong finish",
+  "metrics": {
+    "distance_km": 18.2,
+    "duration": "01:44:00",
+    "average_pace": "5:42/km",
+    "average_heart_rate": 146,
+    "max_heart_rate": 164,
+    "elevation_gain_m": 86,
+    "calories": 1450,
+    "training_effect": "aerobic base",
+    "source": "manual"
+  },
+  "gear": {
+    "shoes": "Sample Daily Trainer",
+    "camera": "Sample Action Camera",
+    "microphone": null,
+    "watch": "Sample GPS Watch"
+  },
+  "conditions": {
+    "weather": "cloudy",
+    "temperature_c": 17,
+    "wind": "light",
+    "surface": "road and park paths",
+    "location_context": "Tallinn area, general location only"
+  },
+  "content_notes": {
+    "mood": "started tired, finished strong",
+    "lesson": "Energy improved after the first few kilometres.",
+    "story_angle": "Showing up on a low-energy morning can still lead to a good finish.",
+    "hook": "I did not feel ready for this run, but the last 5 km changed everything.",
+    "key_moment": "The pace felt easier after kilometre 12.",
+    "publish_intent": "draft"
+  },
+  "clips": [
+    {
+      "label": "morning_intro",
+      "filename": "2026-07-05_morning_intro_001.mp4",
+      "notes": "30 second plan before the run.",
+      "duration_seconds": 30
+    },
+    {
+      "label": "run_clip",
+      "filename": "2026-07-05_run_clip_001.mp4",
+      "notes": "Short clip around the middle of the run.",
+      "duration_seconds": 12
+    },
+    {
+      "label": "finish_reflection",
+      "filename": "2026-07-05_finish_reflection_001.mp4",
+      "notes": "One minute post-run reflection.",
+      "duration_seconds": 60
+    }
+  ],
+  "created_at": "2026-07-05T09:00:00+03:00",
+  "updated_at": "2026-07-05T09:00:00+03:00"
+}
