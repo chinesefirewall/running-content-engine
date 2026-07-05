@@ -44,6 +44,8 @@ content/2026/2026-07-04/
   thumbnails/
 ```
 
+Status: complete
+
 ## v0.3: Metadata schema
 
 Goal: define and validate a daily run metadata file.
@@ -62,6 +64,8 @@ Example:
   "lesson": "Started tired but improved after 12 km."
 }
 ```
+
+Status: complete
 
 ## v0.4: Story brief generator
 
@@ -85,9 +89,17 @@ Outputs:
 - overlay text
 - thumbnail ideas
 
+Status: complete
+
 ## v0.5: Content package generator
 
 Goal: create platform-specific folders and Markdown files.
+
+Example command:
+
+```bash
+python scripts/create_content_package.py --date 2026-07-05
+```
 
 Example:
 
@@ -102,7 +114,13 @@ exports/
     hook.md
   facebook/
     post.md
+  shorts/
+    hook.md
+  thumbnails/
+    ideas.md
 ```
+
+Status: in progress
 
 ## v0.6: AI prompt library
 

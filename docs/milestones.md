@@ -38,7 +38,7 @@ Checklist:
 
 ## Milestone 2: Run metadata standard
 
-Status: in progress
+Status: complete
 
 Objective:
 
@@ -53,12 +53,12 @@ Checklist:
 - [x] Validate generated metadata against the JSON schema
 - [x] Add basic tests
 - [x] Document required and optional fields
-- [ ] Open pull request
-- [ ] Merge to main
+- [x] Open pull request
+- [x] Merge to main
 
 ## Milestone 3: Story brief generator
 
-Status: in progress
+Status: complete (AI prompt deferred to Milestone 6 prompt library)
 
 Objective:
 
@@ -71,8 +71,12 @@ Checklist:
 - [x] Generate sample output
 - [x] Add manual review step
 - [x] Save generated output to daily folder
+- [x] Open pull request
+- [x] Merge to main
 
 ## Milestone 4: Platform content package
+
+Status: in progress
 
 Objective:
 
@@ -80,12 +84,14 @@ Generate reusable content assets for multiple platforms.
 
 Checklist:
 
-- [ ] YouTube package
-- [ ] Instagram package
-- [ ] TikTok package
-- [ ] Facebook package
-- [ ] YouTube Shorts package
-- [ ] Thumbnail ideas
+- [x] YouTube package
+- [x] Instagram package
+- [x] TikTok package
+- [x] Facebook package
+- [x] YouTube Shorts package
+- [x] Thumbnail ideas
+- [ ] Open pull request
+- [ ] Merge to main
 
 ## Milestone 5: Editing workflow integration
 

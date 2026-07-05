@@ -23,9 +23,9 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the story brief stage.
+The project is in the content package stage.
 
-The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The current implementation target is the **story brief generator**, which turns metadata and notes into a review-ready content draft.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders.
 
 ## Quick start
 
@@ -57,6 +57,12 @@ Generate a story brief from the metadata:
 
 ```bash
 python scripts/create_story_brief.py --date 2026-07-05
+```
+
+Generate a platform content package from the metadata:
+
+```bash
+python scripts/create_content_package.py --date 2026-07-05
 ```
 
 Create a workspace for today:
@@ -123,6 +129,7 @@ content/YYYY/YYYY-MM-DD/
 ```text
 docs/
   architecture.md
+  content-package.md
   decision-log.md
   folder-structure.md
   glossary.md
@@ -145,6 +152,7 @@ scripts/
   create_day.py
   create_metadata.py
   create_story_brief.py
+  create_content_package.py
 
 src/
 tests/
