@@ -67,6 +67,14 @@ Example:
 
 Goal: generate daily content ideas from metadata and notes.
 
+Example command:
+
+```bash
+python scripts/create_story_brief.py --date 2026-07-05
+```
+
+Output: `content/2026/2026-07-05/notes/story-brief.md`
+
 Outputs:
 
 - daily story angle
