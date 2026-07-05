@@ -1,4 +1,4 @@
-# Data integration (Garmin & Strava)
+# Data integration (Garmin, Strava, Apple Health, weather)
 
 Roadmap `v0.7` / Milestone 6. The activity importer fills a day's run metadata
 from a **local exported file** so run metrics no longer have to be typed by hand.
@@ -79,6 +79,10 @@ python scripts/import_activity.py --file data/sample/activity.gpx --date 2026-07
 - `--weather`, `--temperature-c`, `--wind` — weather enrichment.
 - `--weather-file` — a local JSON file with `weather`/`temperature_c`/`wind`
   (CLI flags take precedence over the file).
+- `--weather-city`, `--weather-country`, `--auto-locate` — fetch weather from
+  the internet instead of typing it. See "Weather sourcing" below.
+- `--health-export` — path to an Apple Health `export.xml`. See "Apple Health
+  import" below.
 - `--shoes`, `--watch` — gear enrichment.
 - `--shoe-registry` — optional local JSON file mapping shoe aliases to full names
   (see below).
@@ -86,6 +90,52 @@ python scripts/import_activity.py --file data/sample/activity.gpx --date 2026-07
   are preserved and only empty fields are filled).
 - `--dry-run` — print the merged metadata and write nothing.
 - `--no-validate` — skip schema validation (not recommended).
+
+## Weather sourcing
+
+Weather can be fetched from the internet instead of typed by hand, via
+[Open-Meteo](https://open-meteo.com) (free, no API key). This is **opt-in
+only** — no network call happens unless one of these flags is passed:
+
+```bash
+# By city/country (geocoded, then looked up for --date)
+python scripts/import_activity.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
+
+# By your approximate location (IP geolocation -- sends your public IP to a
+# third-party geolocation service; only runs when you pass this flag)
+python scripts/import_activity.py --date 2026-07-05 --auto-locate
+```
+
+Precedence (highest wins): `--weather`/`--temperature-c`/`--wind` >
+`--weather-file` > `--weather-city`/`--auto-locate` fetch. Implementation:
+`scripts/weather.py` (stdlib `urllib` only, no new dependency).
+
+## Apple Health import
+
+Apple Health's manual **Export All Health Data** (Health app → profile
+picture → Export All Health Data) produces `export.zip` containing
+`export.xml`. Like the Garmin/Strava importers, this is a **local file, no
+OAuth, no API key** — the reason it was chosen over Strava's OAuth API for
+richer content (see Decision 008 in `docs/decision-log.md`).
+
+```bash
+python scripts/import_activity.py --date 2026-07-05 --health-export data/private/apple_health/export.xml
+```
+
+Pulls, for the target day (and the night before it, for sleep):
+
+- HRV (`hrv_ms`), resting heart rate (`resting_heart_rate`), sleep duration
+  (`sleep_hours`), VO2 max (`vo2_max`) — written to a new `health` object in
+  `run.json`, alongside `metrics`/`gear`/`conditions`.
+- A same-day running `<Workout>`, if present, populates `metrics.*` the same
+  way a TCX/GPX import would (`metrics.source = "apple_health"`).
+
+Recommended convention: unzip into `data/private/apple_health/export.xml` --
+already covered by the existing `.gitignore` rule for `data/private/`, no
+gitignore change needed. `export.xml` is a full multi-year history dump (can
+be hundreds of MB) and is parsed with `xml.etree.ElementTree.iterparse` so
+memory stays bounded regardless of export size. Implementation:
+`scripts/apple_health.py`.
 
 ## Merge semantics
 
@@ -130,5 +180,9 @@ control.
 
 - Binary `.fit` parsing behind an optional dependency (documented in
   `pyproject.toml`).
-- Authenticated Garmin/Strava API access (OAuth/secrets), deferred to the later
-  MCP milestone per Decision 006 so no secrets enter the repository.
+- Authenticated Strava API access (OAuth/secrets) for richer fields (RPE,
+  kudos, athlete-written titles) beyond what the CSV export gives. Deferred
+  per Decision 008: it needs the same OAuth/secret-storage work Decision 006
+  already assigned to the later MCP milestone, and the CSV import already
+  covers the overlapping aggregate metrics. Apple Health, which needed no
+  OAuth, was implemented instead (see above).

@@ -25,7 +25,16 @@ into a sustainable content pipeline.
 
 The project has reached its **v1.0 MVP**: a complete local pipeline from a recording day to a review-ready, multi-platform content package.
 
-The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool. The **activity importer** parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or activity JSON) and merges only aggregate summary metrics into `run.json`, and can also record weather and gear — deterministically, locally, and without ever storing GPS traces. The **daily pipeline runner** (`scripts/run_day.py`) chains every automated step into one command, and the **manual review and editing workflow** (`docs/manual-review-editing-workflow.md`) defines the human editing step that turns the drafts and raw clips into a finished, publish-ready video.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool. The **activity importer** parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or activity JSON) and merges only aggregate summary metrics into `run.json`, and can also record weather (typed, or fetched from the internet via `--weather-city`), Apple Health signals (HRV, resting heart rate, sleep, VO2 max via `--health-export`), and gear — deterministically, locally, and without ever storing GPS traces. The **content-notes enrichment step** (`scripts/enrich_notes.py`) drafts mood/lesson/story angle/hook/title via Claude, OpenAI, or a local Ollama model, merging into `run.json` without ever touching `publish_intent`. The **daily pipeline runner** (`scripts/run_day.py`) chains every automated step into one command, and the **manual review and editing workflow** (`docs/manual-review-editing-workflow.md`) defines the human editing step that turns the drafts and raw clips into a finished, publish-ready video.
+
+## New here? Start with the testing playbook
+
+Not sure where the project begins? Follow **`docs/testing-playbook.md`** — a
+non-technical, copy-paste, step-by-step guide (with an "expected result" after every
+step) that takes you from a fresh Mac to a finished, review-ready content package.
+It is written so a non-technical friend can test the whole thing, and it doubles as
+the canonical manual test walkthrough. The single entry-point command is
+`python scripts/run_day.py --date today`.
 
 ## Quick start
 
@@ -102,6 +111,20 @@ Record the day's weather and shoes (no export needed):
 python scripts/import_activity.py --date 2026-07-05 --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
 ```
 
+Fetch weather from the internet instead of typing it (no API key needed):
+
+```bash
+python scripts/import_activity.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
+```
+
+Draft content_notes (mood, lesson, story angle, hook, title) via AI. Needs an
+Anthropic API key (`ANTHROPIC_API_KEY`) -- a Claude Pro subscription does not
+include API access; see `docs/ai-content-enrichment.md`:
+
+```bash
+python scripts/enrich_notes.py --date 2026-07-05
+```
+
 Render a content template (requires Node.js; see `remotion/README.md`):
 
 ```bash
@@ -151,11 +174,14 @@ One recording day, start to finish:
    ```bash
    python scripts/run_day.py --date 2026-07-05
    ```
-   To also import metrics from a local Garmin/Strava export and record gear/weather in the same run:
+   To also import metrics from a local Garmin/Strava export, fetch weather, pull Apple Health signals, and draft content_notes via AI in the same run:
    ```bash
    python scripts/run_day.py --date 2026-07-05 \
      --import-file data/sample/garmin-activity.tcx \
-     --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
+     --weather-city Tallinn --weather-country EE \
+     --health-export data/private/apple_health/export.xml \
+     --shoes "Sample Trainer 5" \
+     --enrich --provider claude
    ```
    The runner is idempotent: re-running a day skips steps whose output already exists. Use `--overwrite` to regenerate, and `--dry-run` to preview the plan.
 3. **Place raw clips** in `content/YYYY/YYYY-MM-DD/raw/` (kept local, never committed).
@@ -203,6 +229,7 @@ docs/
   data-integration.md
   manual-review-editing-workflow.md
   metadata-schema.md
+  testing-playbook.md
   milestones.md
   prompt-library.md
   remotion-prototype.md
@@ -241,6 +268,10 @@ scripts/
   create_content_package.py
   create_prompt.py
   import_activity.py
+  weather.py
+  apple_health.py
+  ai_providers.py
+  enrich_notes.py
   run_day.py
 
 remotion/

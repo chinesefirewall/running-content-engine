@@ -23,6 +23,7 @@ EXPECTED_PROMPT_IDS = {
     "shoe-review",
     "weekly-training-summary",
     "health-transformation-story",
+    "enrich-content-notes",
 }
 
 

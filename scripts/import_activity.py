@@ -36,6 +36,11 @@ from typing import Any, Iterable
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scripts.apple_health import (
+    AppleHealthImportError,
+    HealthSummary,
+    parse_apple_health_export,
+)
 from scripts.create_day import parse_activity_date
 from scripts.create_metadata import (
     MetadataValidationError,
@@ -43,6 +48,11 @@ from scripts.create_metadata import (
     metadata_path_for_date,
     validate_metadata,
     write_metadata_file,
+)
+from scripts.weather import (
+    WeatherLookupError,
+    fetch_weather_for_auto_locate,
+    fetch_weather_for_city,
 )
 
 # Fields the importer is allowed to populate from a parsed export.
@@ -650,18 +660,18 @@ def _touch_updated_at(metadata: dict[str, Any]) -> None:
     metadata["updated_at"] = datetime.now(timezone.utc).isoformat()
 
 
-def merge_summary(
-    metadata: dict[str, Any], summary: ActivitySummary, overwrite: bool = False
+def _merge_metrics_fields(
+    metadata: dict[str, Any], provided: dict[str, Any], overwrite: bool = False
 ) -> dict[str, Any]:
-    """Merge a parsed ActivitySummary into a metadata dict in place.
+    """Merge a plain metrics-shaped dict into a metadata dict in place.
 
-    Only the fields the export provides are considered. Existing populated
-    values are preserved unless ``overwrite`` is set. ``metrics.source`` is
-    updated when the current value is missing or the default ``manual``.
+    Only the fields ``provided`` actually contains are considered. Existing
+    populated values are preserved unless ``overwrite`` is set.
+    ``metrics.source`` is updated when the current value is missing or the
+    default ``manual``.
     """
 
     metrics = metadata.setdefault("metrics", {})
-    provided = summary.as_metrics()
 
     for field in SUMMARY_METRIC_FIELDS:
         if field not in provided:
@@ -675,6 +685,58 @@ def merge_summary(
             metrics["source"] = provided["source"]
 
     _touch_updated_at(metadata)
+    return metadata
+
+
+def merge_summary(
+    metadata: dict[str, Any], summary: ActivitySummary, overwrite: bool = False
+) -> dict[str, Any]:
+    """Merge a parsed ActivitySummary into a metadata dict in place.
+
+    See ``_merge_metrics_fields`` for the merge semantics.
+    """
+
+    return _merge_metrics_fields(metadata, summary.as_metrics(), overwrite=overwrite)
+
+
+# ---------------------------------------------------------------------------
+# Apple Health enrichment
+# ---------------------------------------------------------------------------
+
+_HEALTH_FIELDS: tuple[str, ...] = ("hrv_ms", "resting_heart_rate", "sleep_hours", "vo2_max")
+
+
+def merge_health(
+    metadata: dict[str, Any], health: HealthSummary, overwrite: bool = False
+) -> dict[str, Any]:
+    """Merge a parsed Apple Health HealthSummary into a metadata dict in place.
+
+    Populates the ``health`` section (HRV, resting heart rate, sleep, VO2
+    max) and, when the export includes a matching running workout for the
+    day, also merges its metrics via ``_merge_metrics_fields`` (same
+    precedence rules as every other importer).
+    """
+
+    section = metadata.setdefault("health", {})
+    changed = False
+
+    for field in _HEALTH_FIELDS:
+        value = getattr(health, field)
+        if value is None:
+            continue
+        if overwrite or section.get(field) is None:
+            section[field] = value
+            changed = True
+
+    if changed and (overwrite or section.get("source") is None):
+        section["source"] = "apple_health"
+
+    if health.workout_metrics is not None:
+        _merge_metrics_fields(metadata, health.workout_metrics, overwrite=overwrite)
+        changed = True
+
+    if changed:
+        _touch_updated_at(metadata)
     return metadata
 
 
@@ -838,6 +900,33 @@ def build_parser() -> argparse.ArgumentParser:
         "(weather/temperature_c/wind). CLI flags take precedence.",
     )
     parser.add_argument(
+        "--weather-city",
+        default=None,
+        help="City name to fetch weather for from the internet (Open-Meteo, "
+        "no API key needed), e.g. 'Tallinn'. Lowest precedence: --weather / "
+        "--weather-file override it.",
+    )
+    parser.add_argument(
+        "--weather-country",
+        default=None,
+        help="ISO country code to disambiguate --weather-city, e.g. 'EE'.",
+    )
+    parser.add_argument(
+        "--auto-locate",
+        action="store_true",
+        help="Fetch weather for your approximate location via IP geolocation "
+        "instead of --weather-city. Opt-in only: sends your public IP to a "
+        "third-party geolocation service. Never runs unless this flag is passed.",
+    )
+    parser.add_argument(
+        "--health-export",
+        type=Path,
+        default=None,
+        help="Path to an Apple Health export.xml to pull HRV, resting heart "
+        "rate, sleep, and VO2 max from (and a matching running workout, if "
+        "one exists for --date).",
+    )
+    parser.add_argument(
         "--shoes",
         default=None,
         help="Shoes worn. May be a registry alias when --shoe-registry is set.",
@@ -882,10 +971,12 @@ def main(argv: list[str] | None = None) -> int:
             args.temperature_c,
             args.wind,
             args.weather_file,
+            args.weather_city,
+            args.health_export,
             args.shoes,
             args.watch,
         )
-    )
+    ) or args.auto_locate
     if args.file is None and not enrichment_provided:
         print(
             "Error: provide --file and/or weather/gear flags to update metadata.",
@@ -925,10 +1016,39 @@ def main(argv: list[str] | None = None) -> int:
                 else from_file.get("temperature_c")
             )
             wind = wind if wind is not None else from_file.get("wind")
+
+        if args.auto_locate or args.weather_city:
+            if weather is None or temperature_c is None or wind is None:
+                fetched = (
+                    fetch_weather_for_auto_locate(args.date)
+                    if args.auto_locate
+                    else fetch_weather_for_city(
+                        args.weather_city, args.weather_country, args.date
+                    )
+                )
+                weather = weather if weather is not None else fetched.get("weather")
+                temperature_c = (
+                    temperature_c
+                    if temperature_c is not None
+                    else fetched.get("temperature_c")
+                )
+                wind = wind if wind is not None else fetched.get("wind")
+
         shoes = resolve_shoe(args.shoes, args.shoe_registry)
     except ActivityImportError as exc:
         print(str(exc), file=sys.stderr)
         return 1
+    except WeatherLookupError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
+    health: HealthSummary | None = None
+    if args.health_export is not None:
+        try:
+            health = parse_apple_health_export(args.health_export, args.date)
+        except AppleHealthImportError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
 
     metadata_path = args.metadata or metadata_path_for_date(args.date, args.root)
     if metadata_path.exists():
@@ -938,6 +1058,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if summary is not None:
         merge_summary(metadata, summary, overwrite=args.overwrite)
+
+    if health is not None:
+        merge_health(metadata, health, overwrite=args.overwrite)
 
     apply_enrichment(
         metadata,

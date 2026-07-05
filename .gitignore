@@ -123,3 +123,4 @@ media/
 !data/sample/**
 !examples/
 !assets/.gitkeep
+!.env.example
