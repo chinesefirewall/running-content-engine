@@ -76,7 +76,7 @@ Checklist:
 
 ## Milestone 4: Platform content package
 
-Status: in progress
+Status: complete
 
 Objective:
 
@@ -90,8 +90,8 @@ Checklist:
 - [x] Facebook package
 - [x] YouTube Shorts package
 - [x] Thumbnail ideas
-- [ ] Open pull request
-- [ ] Merge to main
+- [x] Open pull request
+- [x] Merge to main
 
 ## Milestone 5: Editing workflow integration
 
@@ -109,17 +109,24 @@ Checklist:
 
 ## Milestone 6: Data integration
 
+Status: in progress
+
 Objective:
 
 Bring in Garmin, Strava, weather, and shoe data.
 
+Delivered by the roadmap v0.7 importer (`scripts/import_activity.py`); see
+`docs/data-integration.md`.
+
 Checklist:
 
-- [ ] Manual Garmin export support
-- [ ] Manual Strava export support
-- [ ] Weather metadata support
-- [ ] Shoe tracking support
+- [x] Manual Garmin export support
+- [x] Manual Strava export support
+- [x] Weather metadata support
+- [x] Shoe tracking support
 - [ ] Evaluate API integration
+- [ ] Open pull request
+- [ ] Merge to main
 
 ## Milestone 7: MVP
 

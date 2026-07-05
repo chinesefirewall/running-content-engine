@@ -91,6 +91,7 @@ dmypy.json
 .pyre/
 .pytype/
 .ruff_cache/
+.junie/
 
 # Project-private local content
 # Do not commit raw media, exports, Garmin/Strava files, GPS tracks, or personal content.
@@ -112,5 +113,6 @@ media/
 
 # Keep synthetic examples in version control when needed.
 !data/sample/
+!data/sample/**
 !examples/
 !assets/.gitkeep

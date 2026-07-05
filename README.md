@@ -23,9 +23,9 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the AI prompt library stage.
+The project is in the Garmin & Strava data integration stage.
 
-The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool. The **activity importer** parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or activity JSON) and merges only aggregate summary metrics into `run.json`, and can also record weather and gear — deterministically, locally, and without ever storing GPS traces.
 
 ## Quick start
 
@@ -75,6 +75,18 @@ Fill a prompt template with the metadata:
 
 ```bash
 python scripts/create_prompt.py --prompt daily-run-recap --date 2026-07-05
+```
+
+Import run metrics from a local Garmin/Strava export:
+
+```bash
+python scripts/import_activity.py --file data/sample/garmin-activity.tcx --date 2026-07-05
+```
+
+Record the day's weather and shoes (no export needed):
+
+```bash
+python scripts/import_activity.py --date 2026-07-05 --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
 ```
 
 Create a workspace for today:
@@ -145,12 +157,20 @@ docs/
   decision-log.md
   folder-structure.md
   glossary.md
+  data-integration.md
   metadata-schema.md
   milestones.md
   prompt-library.md
   requirements.md
   roadmap.md
   story-brief.md
+
+data/
+  sample/
+    garmin-activity.tcx
+    activity.gpx
+    strava-activities.csv
+    activity.json
 
 examples/
   run_metadata.sample.json
@@ -174,6 +194,7 @@ scripts/
   create_story_brief.py
   create_content_package.py
   create_prompt.py
+  import_activity.py
 
 src/
 tests/
