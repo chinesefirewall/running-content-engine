@@ -130,6 +130,12 @@ content/YYYY/YYYY-MM-DD/metadata/run.json
 Check distance, pace, heart rate, shoes, weather, mood, lesson, story angle, and
 `publish_intent`. Do not publish exact GPS traces or sensitive health details.
 
+If `content_notes.draft_source` is `ai_claude`, `ai_openai`, or `ai_ollama`,
+the mood/lesson/story angle/hook were AI-drafted (`scripts/enrich_notes.py`),
+not typed by hand. Read them a little more skeptically: truth beats drama
+applies double to AI drafts, since the model has no way to know if a day was
+actually as described.
+
 ### Step 3: Choose one story angle
 
 Pick only one. Examples:

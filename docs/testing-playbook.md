@@ -178,6 +178,25 @@ That last line, **`Done. Daily pipeline complete ...`**, means success.
 > Safe to run twice: if you run the same date again it will say `[skip] ...` for
 > steps that are already done. That is normal and not an error.
 
+### Bonus: weather and Apple Health data from the internet (optional)
+
+Two more flags you can add to either option above, no export files needed:
+
+```bash
+# Fetch the day's weather instead of typing it (no account or key needed)
+python scripts/run_day.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
+
+# Pull HRV, resting heart rate, sleep, and VO2 max from an Apple Health export
+python scripts/run_day.py --date 2026-07-05 --health-export data/private/apple_health/export.xml
+```
+
+Getting the Apple Health export: on your iPhone, open **Health** → tap your
+profile picture → **Export All Health Data** → AirDrop or save the resulting
+`export.zip` to your Mac → unzip it → put `export.xml` at
+`data/private/apple_health/export.xml` (that folder is never committed).
+
+See `docs/data-integration.md` for details.
+
 ---
 
 ## Part 4 — Look at what was created
@@ -267,6 +286,66 @@ The first draft is intentionally generic. Make it yours by editing two things in
 
 ---
 
+## Part 5b — Or let AI draft it for you (optional, needs an API key)
+
+Instead of typing `mood`/`lesson`/`story_angle`/`hook`/`title_working` by hand
+(Part 5), you can have Claude draft them from your run's actual numbers.
+
+**One-time setup:**
+
+1. Get an API key at `https://console.anthropic.com/settings/keys`. This is
+   **not** the same as a Claude Pro subscription — Pro does not include API
+   access, and this is billed separately (a few cents at most for this use).
+2. Make the key available to the tool:
+   ```bash
+   cp .env.example .env
+   ```
+   Open `.env` in a text editor and paste your key after `ANTHROPIC_API_KEY=`
+   (no space after the `=`). Save it.
+3. Install the AI package:
+   ```bash
+   pip install anthropic
+   ```
+
+**Every time you want an AI draft**, load the key into your Terminal session
+first, then run the script:
+
+```bash
+set -a && source .env && set +a
+python scripts/enrich_notes.py --date 2026-07-05
+```
+
+**Expected result:**
+
+```text
+Updated metadata file: content/2026/2026-07-05/metadata/run.json (draft_source: ai_claude)
+Audit log: content/2026/2026-07-05/notes/enrichment-log/2026-07-05-claude.json
+```
+
+Open `metadata/run.json` — `mood`, `lesson`, `story_angle`, and `hook` are now
+filled in, and `content_notes.draft_source` says `"ai_claude"` so you always
+know these were AI-written, not typed by hand. It never touches
+`publish_intent` and never overwrites a field you already filled in by hand
+(unless you add `--overwrite`).
+
+Then regenerate the drafts exactly as in Part 5, step 4:
+
+```bash
+python scripts/create_story_brief.py --date 2026-07-05 --overwrite
+python scripts/create_content_package.py --date 2026-07-05 --overwrite
+```
+
+**Read it before you trust it.** AI-drafted mood and lessons are a starting
+point, not the truth — they're generated from the numbers alone, with no idea
+how the run actually felt. Edit anything that doesn't match reality.
+
+> A local, free alternative exists too (`--provider ollama`, no API key, no
+> internet). It runs a smaller model on your own Mac, so expect a rougher
+> draft you'll edit more. See `docs/ai-content-enrichment.md` for setup and
+> the tradeoffs.
+
+---
+
 ## Part 6 — Put your camera clips in the folder
 
 Copy 2–3 minutes of your **Insta360 Ace Pro 2** clips into the day's `raw/` folder:
@@ -329,15 +408,17 @@ each platform. Nothing is auto-posted — you publish manually when happy.
 ## If something goes wrong (quick fixes)
 
 | What you see | What it means / what to do |
-|---|---|
+| --- | --- |
 | `command not found: python` | Try `python3` instead of `python`. If still missing, install Python (Part 1.1). |
 | `command not found: pip` | Try `pip3 install -e ".[dev]"`. |
 | `No such file or directory` after a `cd` | You are not in the project folder. Redo Part 0 and check with `pwd`. |
 | `Could not detect the export format ... Supported: .tcx, .gpx, .csv, .json` | You tried to import the raw `.fit` file. Use the `.tcx` from Part 2 instead. |
 | `Metadata file already exists ... Use --overwrite` | The day was already created. Add `--overwrite` to refresh it (Part 5). |
 | `[skip] ...` lines when running | Not an error — those steps were already done for that date. |
-| The captions look generic | Expected on first run. Fill in `mood`/`lesson`, then re-generate the drafts (Part 5). |
+| The captions look generic | Expected on first run. Fill in `mood`/`lesson` by hand (Part 5) or via AI (Part 5b), then re-generate the drafts. |
 | Node/`npm` errors in Part 7 | Part 7 is optional. Install Node.js first, or skip the video render entirely. |
+| `ANTHROPIC_API_KEY is not set` | Part 5b's key isn't loaded into this Terminal session. Run `set -a && source .env && set +a` first. |
+| `command not found: sk-ant-...` when sourcing `.env` | There's a stray space after `=` in `.env`, e.g. `ANTHROPIC_API_KEY= sk-ant-...`. Remove the space. |
 
 If a command prints a long red error you do not understand, copy the **last few
 lines** and send them to Niyi — that is usually enough to diagnose it.
@@ -364,11 +445,21 @@ python scripts/run_day.py --date 2026-07-05 \
   --import-file data/my-run.tcx \
   --weather clear --temperature-c 16 --shoes "My shoes"
 
+#    ...or fetch weather from the internet / pull Apple Health data (Part 3 bonus):
+python scripts/run_day.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
+python scripts/run_day.py --date 2026-07-05 --health-export data/private/apple_health/export.xml
+
 # 4. Open the day's folder
 open content/2026/2026-07-05
 
 # 5. After editing metadata by hand, refresh ONLY the drafts
 #    (do NOT use run_day --overwrite here: it would reset run.json)
+python scripts/create_story_brief.py --date 2026-07-05 --overwrite
+python scripts/create_content_package.py --date 2026-07-05 --overwrite
+
+# 5b. ...or let AI draft mood/lesson/hook/title instead (Part 5b, needs an API key)
+set -a && source .env && set +a
+python scripts/enrich_notes.py --date 2026-07-05
 python scripts/create_story_brief.py --date 2026-07-05 --overwrite
 python scripts/create_content_package.py --date 2026-07-05 --overwrite
 
@@ -388,6 +479,8 @@ Please tell Niyi:
 4. After editing `mood`/`lesson` and re-running, did the story brief improve?
 5. Did the captions in `exports/` feel usable, or too generic?
 6. (If tried) did the Remotion video render? How long did it take?
-7. Where did you get stuck, confused, or lost? (This is the most useful feedback.)
-8. Overall: could you follow this guide without asking for help? (1 = not at all,
+7. (If tried) did the AI-drafted content notes (Part 5b) feel accurate and in
+   your voice, or did you have to rewrite most of it?
+8. Where did you get stuck, confused, or lost? (This is the most useful feedback.)
+9. Overall: could you follow this guide without asking for help? (1 = not at all,
    5 = totally smooth)

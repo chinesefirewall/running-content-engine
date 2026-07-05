@@ -6,14 +6,18 @@ The metadata schema defines the structured information captured for one running 
 
 This metadata is the bridge between raw footage and later AI-assisted content generation.
 
-It will support future steps such as:
+It supports:
 
 - story brief generation
 - platform-specific captions
 - video overlay text
 - Remotion template props
+- Garmin/Strava/Apple Health enrichment (`scripts/import_activity.py`)
+- AI-assisted content-notes drafting (`scripts/enrich_notes.py`)
+
+And future steps such as:
+
 - MCP-controlled local tools
-- Garmin or Strava enrichment
 
 ## File location
 
@@ -126,8 +130,28 @@ Important fields:
 - `hook`
 - `key_moment`
 - `publish_intent`
+- `draft_source` — who wrote these fields: `manual` (or `null`), `ai_claude`,
+  `ai_openai`, or `ai_ollama`. Set automatically by `scripts/enrich_notes.py`;
+  never set by hand. Review AI-drafted notes for truthfulness before treating
+  them as final (see `docs/manual-review-editing-workflow.md`).
 
 This section is likely to become the most important input for the AI story engine.
+
+### `health`
+
+Optional. Populated by `scripts/import_activity.py --health-export` from an
+Apple Health `export.xml` (see `docs/data-integration.md`). Every field is
+nullable and absent by default.
+
+- `hrv_ms` — heart rate variability (SDNN), in milliseconds.
+- `resting_heart_rate` — beats per minute.
+- `sleep_hours` — hours asleep the night before the run.
+- `vo2_max`
+- `source` — `apple_health` or `manual`.
+
+This is real personal health data. It is excluded from prompts sent to cloud
+AI providers by default (`scripts/enrich_notes.py`); only `--provider ollama`
+(fully local) or an explicit `--include-health-cloud` flag includes it.
 
 ### `clips`
 

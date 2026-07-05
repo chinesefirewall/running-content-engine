@@ -117,9 +117,11 @@ Fetch weather from the internet instead of typing it (no API key needed):
 python scripts/import_activity.py --date 2026-07-05 --weather-city Tallinn --weather-country EE
 ```
 
-Draft content_notes (mood, lesson, story angle, hook, title) via AI. Needs an
-Anthropic API key (`ANTHROPIC_API_KEY`) -- a Claude Pro subscription does not
-include API access; see `docs/ai-content-enrichment.md`:
+Draft content_notes (mood, lesson, story angle, hook, title) via AI. Needs the
+`anthropic` package (`pip install anthropic`, or `pip install -e ".[enrich]"`
+for both Claude and OpenAI) and an Anthropic API key (`ANTHROPIC_API_KEY`) --
+a Claude Pro subscription does not include API access; see
+`docs/ai-content-enrichment.md`:
 
 ```bash
 python scripts/enrich_notes.py --date 2026-07-05
@@ -222,6 +224,7 @@ content/YYYY/YYYY-MM-DD/
 ```text
 docs/
   architecture.md
+  ai-content-enrichment.md
   content-package.md
   decision-log.md
   folder-structure.md
@@ -254,6 +257,7 @@ prompts/
   shoe-review.md
   weekly-training-summary.md
   health-transformation-story.md
+  enrich-content-notes.md
 
 schemas/
   run_metadata.schema.json
