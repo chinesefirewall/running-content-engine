@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/chinesefirewall/running-content-engine/schemas/run_metadata.schema.json",
+  "title": "Running Content Engine Run Metadata",
+  "description": "Metadata for one running or recording day workspace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "date",
+    "activity_type",
+    "recording_type",
+    "privacy_level",
+    "metrics",
+    "content_notes"
+  ],
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Recording or activity date in YYYY-MM-DD format."
+    },
+    "activity_type": {
+      "type": "string",
+      "enum": ["run", "walk", "cycling", "gym", "race", "rest_day", "other"]
+    },
+    "recording_type": {
+      "type": "string",
+      "enum": ["daily_run", "long_run", "race", "shoe_review", "weekly_recap", "lifestyle", "other"]
+    },
+    "privacy_level": {
+      "type": "string",
+      "enum": ["public_safe", "private", "sensitive"],
+      "description": "Controls whether metadata is safe for public examples or must remain local."
+    },
+    "title_working": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "distance_km": {"type": ["number", "null"], "minimum": 0},
+        "duration": {"type": ["string", "null"], "description": "Duration in HH:MM:SS or MM:SS format."},
+        "average_pace": {"type": ["string", "null"], "description": "Example: 5:42/km."},
+        "average_heart_rate": {"type": ["integer", "null"], "minimum": 0},
+        "max_heart_rate": {"type": ["integer", "null"], "minimum": 0},
+        "elevation_gain_m": {"type": ["number", "null"]},
+        "calories": {"type": ["integer", "null"], "minimum": 0},
+        "training_effect": {"type": ["string", "null"]},
+        "source": {"type": ["string", "null"], "enum": ["manual", "garmin", "strava", "apple_health", "other", null]}
+      }
+    },
+    "gear": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "shoes": {"type": ["string", "null"]},
+        "camera": {"type": ["string", "null"]},
+        "microphone": {"type": ["string", "null"]},
+        "watch": {"type": ["string", "null"]}
+      }
+    },
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "weather": {"type": ["string", "null"]},
+        "temperature_c": {"type": ["number", "null"]},
+        "wind": {"type": ["string", "null"]},
+        "surface": {"type": ["string", "null"]},
+        "location_context": {"type": ["string", "null"], "description": "General location context only. Avoid exact addresses or sensitive GPS traces."}
+      }
+    },
+    "content_notes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mood", "lesson", "story_angle"],
+      "properties": {
+        "mood": {"type": ["string", "null"]},
+        "lesson": {"type": ["string", "null"]},
+        "story_angle": {"type": ["string", "null"]},
+        "hook": {"type": ["string", "null"]},
+        "key_moment": {"type": ["string", "null"]},
+        "publish_intent": {"type": "string", "enum": ["do_not_publish", "draft", "ready_for_review", "published"]}
+      }
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "filename"],
+        "properties": {
+          "label": {"type": "string", "enum": ["morning_intro", "run_clip", "finish_reflection", "b_roll", "other"]},
+          "filename": {"type": "string"},
+          "notes": {"type": ["string", "null"]},
+          "duration_seconds": {"type": ["number", "null"], "minimum": 0}
+        }
+      }
+    },
+    "created_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}
