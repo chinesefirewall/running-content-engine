@@ -120,7 +120,7 @@ exports/
     ideas.md
 ```
 
-Status: in progress
+Status: complete
 
 ## v0.6: AI prompt library
 
@@ -156,15 +156,50 @@ notes/
 
 See `docs/prompt-library.md` for the full catalogue and usage.
 
-Status: in progress
+Status: complete
 
 ## v0.7: Garmin and Strava integration
 
-Goal: ingest activity data from exported files or APIs.
+Goal: ingest activity data from exported files or APIs so run metrics no longer
+have to be typed by hand.
 
-Initial approach may use manual exports.
+The importer parses a local Garmin/Strava export (TCX, GPX, Strava CSV, or a
+generic activity JSON) and merges only aggregate summary metrics into the day's
+validated `run.json`. It is deterministic and local-first: no network calls, no
+auto-publishing, and GPS trackpoints are read transiently to compute distance /
+elevation and then discarded (no latitude/longitude is ever stored). The same
+command can also record the day's weather and gear.
 
-Future approach may use authenticated APIs.
+Example commands:
+
+```bash
+python scripts/import_activity.py --file data/sample/garmin-activity.tcx --date 2026-07-05
+python scripts/import_activity.py --file data/sample/strava-activities.csv --date 2026-07-05
+python scripts/import_activity.py --date 2026-07-05 --weather clear --temperature-c 16 --shoes "Sample Trainer 5"
+```
+
+Example: the merged `metrics` block written to `run.json`:
+
+```json
+{
+  "metrics": {
+    "distance_km": 10.0,
+    "duration": "00:52:00",
+    "average_pace": "5:12/km",
+    "average_heart_rate": 146,
+    "max_heart_rate": 172,
+    "elevation_gain_m": 13.0,
+    "calories": 620,
+    "source": "garmin"
+  }
+}
+```
+
+Initial approach uses manual exports (implemented). Future work: binary `.fit`
+parsing (optional dependency) and authenticated Garmin/Strava APIs, deferred to
+the later MCP milestone. See `docs/data-integration.md` for details.
+
+Status: complete
 
 ## v0.8: Remotion rendering prototype
 
