@@ -134,6 +134,30 @@ Examples:
 - weekly training summary
 - health transformation story
 
+The prompts are version-controlled, provider-agnostic templates in `prompts/`.
+A deterministic, local-first renderer fills a chosen template with the day's
+validated `run.json` and writes a ready-to-paste prompt into the day's
+`notes/prompts/` folder. It never calls an external AI service.
+
+Example commands:
+
+```bash
+python scripts/create_prompt.py --list
+python scripts/create_prompt.py --prompt daily-run-recap --date 2026-07-05
+```
+
+Example output:
+
+```text
+notes/
+  prompts/
+    daily-run-recap.md
+```
+
+See `docs/prompt-library.md` for the full catalogue and usage.
+
+Status: in progress
+
 ## v0.7: Garmin and Strava integration
 
 Goal: ingest activity data from exported files or APIs.

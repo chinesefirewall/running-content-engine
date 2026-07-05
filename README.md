@@ -23,9 +23,9 @@ into a sustainable content pipeline.
 
 ## Current stage
 
-The project is in the content package stage.
+The project is in the AI prompt library stage.
 
-The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders.
+The run metadata layer is in place: a structured `metadata/run.json` file for each daily workspace, validated against a JSON schema. The **story brief generator** turns metadata and notes into a review-ready draft, and the **content package generator** turns that metadata into platform-specific Markdown files (YouTube, Instagram, TikTok, Facebook, Shorts, and thumbnail ideas) written into the day's `exports/` folders. The **AI prompt library** provides reusable, version-controlled prompt templates in `prompts/` and a renderer that fills a chosen template with the day's metadata for pasting into an AI tool.
 
 ## Quick start
 
@@ -63,6 +63,18 @@ Generate a platform content package from the metadata:
 
 ```bash
 python scripts/create_content_package.py --date 2026-07-05
+```
+
+List the available AI prompt templates:
+
+```bash
+python scripts/create_prompt.py --list
+```
+
+Fill a prompt template with the metadata:
+
+```bash
+python scripts/create_prompt.py --prompt daily-run-recap --date 2026-07-05
 ```
 
 Create a workspace for today:
@@ -135,12 +147,20 @@ docs/
   glossary.md
   metadata-schema.md
   milestones.md
+  prompt-library.md
   requirements.md
   roadmap.md
   story-brief.md
 
 examples/
   run_metadata.sample.json
+
+prompts/
+  daily-run-recap.md
+  race-day-recap.md
+  shoe-review.md
+  weekly-training-summary.md
+  health-transformation-story.md
 
 schemas/
   run_metadata.schema.json
@@ -153,6 +173,7 @@ scripts/
   create_metadata.py
   create_story_brief.py
   create_content_package.py
+  create_prompt.py
 
 src/
 tests/
